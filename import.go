@@ -28,7 +28,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	stmt, err := db.Prepare("insert into taxes (id, business, owner, location, county, warrant, amount) values (default, $1, $2, $3, $4, $5, $6::money);")
+	stmt, err := db.Prepare("insert into taxes (id, business, owner, location, county, warrant, amount) values (default, NULLIF($1, ''), NULLIF($2, ''), $3, $4, $5, $6::money);")
 
 	if err != nil {
 		log.Fatal(err)
@@ -38,7 +38,7 @@ func main() {
 		for i := range rec {
 			rec[i] = strings.TrimSpace(rec[i])
 		}
-		log.Printf(": %#v", rec)
+		log.Printf("%#v", rec)
 
 		// delete all internal space from money column.  some of the money fields
 		// have weird unicode \00a0 characters between the dollar sign and the

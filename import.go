@@ -34,6 +34,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if len(record) == 0 {
+		log.Fatalf("no records to import.")
+	}
+
+	ifs := make([]interface{}, len(record[0]), len(record[0]))
+
 	for _, rec := range record {
 		for i := range rec {
 			rec[i] = strings.TrimSpace(rec[i])
@@ -62,13 +68,9 @@ func main() {
 			rec[5] = rec[5][:len(rec[5])-2]
 		}
 
-		ifs := func() []interface{} {
-			rc := make([]interface{}, len(rec))
-			for i := range rec {
-				rc[i] = &rec[i]
-			}
-			return rc
-		}()
+		for i := range rec {
+			ifs[i] = &rec[i]
+		}
 
 		_, err := stmt.Exec(ifs...)
 
